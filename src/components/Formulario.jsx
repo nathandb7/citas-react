@@ -1,8 +1,9 @@
 import {useState, useEffect} from 'react'
+import Error from './Error';
 
 
 
-function Formulario({ pacientes, setPacientes }) {
+function Formulario({ pacientes, setPacientes, paciente, setPaciente }) {
   const [nombre, setNombre] = useState('');
   const [propietario, setPropietario] = useState('');
   const [email, setEmail] = useState('');
@@ -10,6 +11,24 @@ function Formulario({ pacientes, setPacientes }) {
   const [sintomas, setSintomas] = useState('');
 
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if(Object.keys(paciente).length > 0) {
+      setNombre(paciente.nombre)
+      setPropietario(paciente.propietario)
+      setEmail(paciente.email)
+      setFecha(paciente.fecha)
+      setSintomas(paciente.sintomas)
+    }
+  }, [paciente]) 
+
+
+  const generarId = () => {
+    const random = Math.random().toString(36).substr(2);
+    const fecha = Date.now().toString(36)
+
+    return random + fecha
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,8 +51,20 @@ function Formulario({ pacientes, setPacientes }) {
       sintomas
     }
 
-    setPacientes([...pacientes, objetoPaciente])
-    
+    if(paciente.id) {
+        // Editando el Registro
+        objetoPaciente.id = paciente.id
+        const pacientesActualizados = pacientes.map( pacienteState => pacienteState.id === paciente.id ? objetoPaciente : pacienteState )
+
+        setPacientes(pacientesActualizados)
+        setPaciente({})
+
+    } else {
+        // Nuevo el Registro
+        objetoPaciente.id = generarId();
+        setPacientes([...pacientes, objetoPaciente]);
+    }
+  
     // Reiniciar form
     setNombre('')
     setPropietario('')
@@ -53,11 +84,7 @@ function Formulario({ pacientes, setPacientes }) {
       </p>
 
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg py-10 px-5 mb-10 m-3">
-        {error && (
-          <div className='bg-red-800 text-white text-center p-3 uppercase font-bold mb-3 rounded-md'>
-            <p>Todos los campos son obligatorios</p>
-          </div>
-        )}
+        { error && <Error><p>Todos los campos son obligatorios</p></Error> }
         <div className="mb-5"> 
           <label htmlFor="mascota" className="block text-gray-700 uppercase font-bold">Nombre Mascota</label>
           <input
@@ -119,7 +146,7 @@ function Formulario({ pacientes, setPacientes }) {
         <input
             type="submit"
             className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-all"
-            value="Agregar Paciente" />
+            value={ paciente.id ? 'Editar Paciente' : 'Agregar Paciente'} />
       </form>
     </div>
   )
