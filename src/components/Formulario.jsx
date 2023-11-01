@@ -1,26 +1,24 @@
 import {useState, useEffect} from 'react'
 import Error from './Error';
 
-
-
-function Formulario({ pacientes, setPacientes, paciente, setPaciente }) {
+const Formulario = ({ pacientes, setPacientes, paciente, setPaciente }) => {
   const [nombre, setNombre] = useState('');
   const [propietario, setPropietario] = useState('');
   const [email, setEmail] = useState('');
   const [fecha, setFecha] = useState('');
   const [sintomas, setSintomas] = useState('');
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(false)
 
   useEffect(() => {
-    if(Object.keys(paciente).length > 0) {
-      setNombre(paciente.nombre)
-      setPropietario(paciente.propietario)
-      setEmail(paciente.email)
-      setFecha(paciente.fecha)
-      setSintomas(paciente.sintomas)
-    }
-  }, [paciente]) 
+      if( Object.keys(paciente).length > 0  ) {
+          setNombre(paciente.nombre)
+          setPropietario(paciente.propietario)
+          setEmail(paciente.email)
+          setFecha(paciente.fecha)
+          setSintomas(paciente.sintomas)
+      }
+  }, [paciente])
 
 
   const generarId = () => {
@@ -133,7 +131,7 @@ function Formulario({ pacientes, setPacientes, paciente, setPaciente }) {
         </div>
 
         <div className="mb-5">
-          <label htmlFor="sintomas" className="block text-gray-700 uppercase font-bold">Email</label>
+          <label htmlFor="sintomas" className="block text-gray-700 uppercase font-bold">Sintomas</label>
           <textarea
               id="sintomas"
               className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
